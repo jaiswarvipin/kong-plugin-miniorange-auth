@@ -3,12 +3,6 @@ local type = type
 local match = string.match
 local noop = function() end
 local ngx  = ngx
-local cjson = require "cjson.safe"
-
-local CONTENT_LENGTH_NAME  = "Content-Length"
-local CONTENT_TYPE_NAME    = "Content-Type"
-local CONTENT_TYPE_JSON    = "application/json; charset=utf-8"
-local CONTENT_TYPE_GRPC    = "application/grpc"
 
 -- new table
 local _M = {}
@@ -31,25 +25,25 @@ local function iter(config_array)
   end, config_array, 0
 end
 
-function _M.filter(conf, headers)
-	local strUpstreamURI = ngx.var.upstream_uri --Get the Upstream URI from NGIEX env.
-	kong.log('Upstream URL :'..strUpstreamURI)	-- Printing the variable
-	-- ngx.header[CONTENT_TYPE_NAME] = CONTENT_TYPE_JSON	-- Setting the response header
+function _M.filter(conf, headers, self)
+  local strUpstreamURI = ngx.var.upstream_uri --Get the Upstream URI from NGIEX env.
+  kong.log(strUpstreamURI)	-- Printing the variable
   
-	if strUpstreamURI == nil or strUpstreamURI == "" then
-		error("Invalid Service URL",2)
-	end
+  if strUpstreamURI == nil or strUpstreamURI == "" then
+	return "Invalid Service URL"
+  end
   
-	if strUpstreamURI ~= '' then
-		--ngx.print(ngx.OK)
-		return ngx.exit(ngx.OK)
-	end
-    
-	ngx.status = 403
-	
-	return ngx.exit(ngx.OK)
-
---  return "Upstream URL found"..strUpstreamURI
+  if strUpstreamURI ~= '' then
+	kong.response.set_status(403)
+	kong.response.set_header('x-miniorange-auth', 'Aunauthrized access')
+	return kong.response.exit(403, [[{"message":"Access Forbidden"}]], {
+																			["Content-Type"] = "application/json",
+																			["WWW-Authenticate"] = "Basic"
+																		}
+							)
+  end
+  
+  return "Upstream URL found"..strUpstreamURI
 end
 
 return _M
