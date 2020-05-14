@@ -26,18 +26,23 @@ local function iter(config_array)
 end
 
 function _M.filter(conf, headers)
-  local strUpstreamURI = ngx.var.upstream_uri --Get the Upstream URI from NGIEX env.
-  kong.log(strUpstreamURI)	-- Printing the variable
+	local strUpstreamURI = ngx.var.upstream_uri --Get the Upstream URI from NGIEX env.
+	kong.log('Upstream URL :'..strUpstreamURI)	-- Printing the variable
   
-  if strUpstreamURI == nil or strUpstreamURI == "" then
-	return "Invalid Service URL"
-  end
+	if strUpstreamURI == nil or strUpstreamURI == "" then
+		error("Invalid Service URL",2)
+	end
   
-  if strUpstreamURI ~= '' then
-	return "Valid Service URL"
-  end
-  
-  return "Upstream URL found"..strUpstreamURI
+	if strUpstreamURI ~= '' then
+		error("Valid Service URL",2)
+	end
+    
+	ngx.status = 403
+	
+	ngx.print(ngx.status)
+
+
+--  return "Upstream URL found"..strUpstreamURI
 end
 
 return _M
