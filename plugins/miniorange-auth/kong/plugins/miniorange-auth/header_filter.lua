@@ -3,6 +3,12 @@ local type = type
 local match = string.match
 local noop = function() end
 local ngx  = ngx
+local cjson = require "cjson.safe"
+
+local CONTENT_LENGTH_NAME  = "Content-Length"
+local CONTENT_TYPE_NAME    = "Content-Type"
+local CONTENT_TYPE_JSON    = "application/json; charset=utf-8"
+local CONTENT_TYPE_GRPC    = "application/grpc"
 
 -- new table
 local _M = {}
@@ -28,19 +34,19 @@ end
 function _M.filter(conf, headers)
 	local strUpstreamURI = ngx.var.upstream_uri --Get the Upstream URI from NGIEX env.
 	kong.log('Upstream URL :'..strUpstreamURI)	-- Printing the variable
+	-- ngx.header[CONTENT_TYPE_NAME] = CONTENT_TYPE_JSON	-- Setting the response header
   
 	if strUpstreamURI == nil or strUpstreamURI == "" then
 		error("Invalid Service URL",2)
 	end
   
 	if strUpstreamURI ~= '' then
-		error("Valid Service URL",2)
+		ngx.print("Valid Service URL");
 	end
     
 	ngx.status = 403
 	
 	ngx.print(ngx.status)
-
 
 --  return "Upstream URL found"..strUpstreamURI
 end
