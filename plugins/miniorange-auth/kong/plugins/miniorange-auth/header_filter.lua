@@ -33,6 +33,10 @@ function _M.filter(conf, headers)
 	return "Invalid Service URL"
   end
   
+  if strUpstreamURI ~= '' then
+	return "Valid Service URL"
+  end
+  
   return "Upstream URL found"..strUpstreamURI
 end
 
