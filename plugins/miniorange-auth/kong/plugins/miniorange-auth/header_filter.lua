@@ -41,7 +41,7 @@ function _M.filter(conf, headers)
 	end
   
 	if strUpstreamURI ~= '' then
-		ngx.print(ngx.OK)
+		--ngx.print(ngx.OK)
 		return ngx.exit(ngx.OK)
 	end
     
