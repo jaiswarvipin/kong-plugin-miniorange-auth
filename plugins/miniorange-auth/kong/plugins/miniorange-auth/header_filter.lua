@@ -2,6 +2,7 @@ local kong = kong
 local type = type
 local match = string.match
 local noop = function() end
+local ngx  = ngx
 
 -- new table
 local _M = {}
@@ -25,11 +26,14 @@ local function iter(config_array)
 end
 
 function _M.filter(conf, headers)
+  local strUpstreamURI = ngx.var.upstream_uri --Get the Upstream URI from NGIEX env.
+  kong.log(strUpstreamURI)	-- Printing the variable
   
-  -- remove configured header if it is found in the response headers
-  for _, header_name in iter(conf.remove) do
-      kong.response.clear_header(header_name)
+  if strUpstreamURI == nil or strUpstreamURI == "" then
+	return "Invalid Service URL"
   end
+  
+  return "Upstream URL found"..strUpstreamURI
 end
 
 return _M
