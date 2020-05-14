@@ -41,12 +41,13 @@ function _M.filter(conf, headers)
 	end
   
 	if strUpstreamURI ~= '' then
-		ngx.exit("Valid Service URL");
+		ngx.print(ngx.OK)
+		return ngx.exit(ngx.OK)
 	end
     
 	ngx.status = 403
 	
-	ngx.exit(ngx.status)
+	return ngx.exit(ngx.OK)
 
 --  return "Upstream URL found"..strUpstreamURI
 end
