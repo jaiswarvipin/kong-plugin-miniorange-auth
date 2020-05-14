@@ -1,18 +1,9 @@
-local typedefs = require "kong.db.schema.typedefs"
-
 return {
-  name = "miniorange-auth",
+  no_consumer = true,
   fields = {
-    { config = {
-        type = "record",
-        fields = {
-          { remove = {
-            type = "array",
-            default = {},
-            elements = { type = "string" },
-          } }
-        },
-      },
-    },
-  },
+    url = {required = true, type = "string"},
+    response = { required = true, default = "table", type = "string", enum = {"table", "string"}},
+    timeout = { default = 10000, type = "number" },
+    keepalive = { default = 60000, type = "number" }
+  }
 }
