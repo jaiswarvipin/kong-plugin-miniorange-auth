@@ -116,9 +116,18 @@ function _M.execute(conf)
     else
       response_body = string.match(body, "%b{}")
     end
-	kong.log("Mini Orange Response ========") -- Response
-	kong.log(strResponseBody) -- Response
-	kong.log(strResponseBody.status) -- Response
+	
+	if strResponseBody.status == nill or strResponseBody.status ~= 'SUCCESS' then 
+		local strErrorMessage	= 'Aunauthrized access - '..strResponseBody.message
+		kong.response.set_status(1403)
+		kong.response.set_header('x-miniorange-auth', strErrorMessage)
+		return kong.response.exit(1403, [[{"message":strErrorMessage}]], {
+																			["Content-Type"] = "application/json",
+																			["WWW-Authenticate"] = "Basic"
+																		}
+							)
+	end
+	
     return kong_response.send(status_code, body)
   end
 
