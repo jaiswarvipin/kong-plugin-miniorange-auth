@@ -1,6 +1,7 @@
-local JSON = require "kong.plugins.middleman.json"
+local JSON = require "kong.plugins.miniorange-auth.json"
 local cjson = require "cjson"
 local url = require "socket.url"
+local kong = kong
 
 local string_format = string.format
 
@@ -39,7 +40,7 @@ function _M.execute(conf)
     return
   end
 
-  local name = "[middleman] "
+  local name = "[miniorange-auth] "
   local ok, err
   local parsed_url = parse_url(conf.url)
   local host = parsed_url.host
@@ -114,8 +115,9 @@ function _M.execute(conf)
     else
       response_body = string.match(body, "%b{}")
     end
-
-    return kong_response.send(status_code, response_body)
+	kong.log("Mini Orange Response ========") -- Response
+	kong.log(body) -- Response
+    return kong_response.send(status_code, body)
   end
 
 end
