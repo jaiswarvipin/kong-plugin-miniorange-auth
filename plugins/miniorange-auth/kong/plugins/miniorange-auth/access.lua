@@ -116,7 +116,7 @@ function _M.execute(conf)
       response_body = string.match(body, "%b{}")
     end
 	kong.log("Mini Orange Response ========") -- Response
-	kong.log(body) -- Response
+	kong.log(body.status) -- Response
     return kong_response.send(status_code, body)
   end
 
